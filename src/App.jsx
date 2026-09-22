@@ -3,7 +3,7 @@ import Dashboard from './components/Dashboard'
 import FilterBar from './components/FilterBar'
 import ItemForm from './components/ItemForm'
 import ItemTable from './components/ItemTable'
-import { STATUS_ORDER, STORAGE_KEY } from './constants'
+import { EMPTY_ITEM, STATUS_ORDER, STORAGE_KEY } from './constants'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { getMargin } from './utils/calculations'
 import './App.css'
@@ -37,6 +37,39 @@ function App() {
   function handleDeleteItem(id) {
     if (!window.confirm('Diesen Artikel wirklich löschen?')) return
     setItems((previous) => previous.filter((item) => item.id !== id))
+  }
+
+  // Bulk-Import aus einer JSON-Datei (z.B. exportierte Vinted-Artikel).
+  // FileReader liest die Datei asynchron; das Ergebnis kommt im
+  // "load"-Event, sobald der Browser fertig ist.
+  function handleImportFile(event) {
+    const file = event.target.files[0]
+    event.target.value = ''
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      let importedItems
+      try {
+        importedItems = JSON.parse(reader.result)
+      } catch {
+        window.alert('Die Datei ist kein gültiges JSON.')
+        return
+      }
+      if (!Array.isArray(importedItems)) {
+        window.alert('Die JSON-Datei muss ein Array von Artikeln enthalten.')
+        return
+      }
+
+      const newItems = importedItems.map((item) => ({
+        ...EMPTY_ITEM,
+        ...item,
+        id: crypto.randomUUID(),
+      }))
+      setItems((previous) => [...previous, ...newItems])
+      window.alert(`${newItems.length} Artikel importiert.`)
+    }
+    reader.readAsText(file)
   }
 
   const visibleItems = items
@@ -81,6 +114,7 @@ function App() {
         categoryFilter={categoryFilter}
         onCategoryFilterChange={setCategoryFilter}
         onAddClick={() => setFormMode('new')}
+        onImportFile={handleImportFile}
       />
 
       {formMode && (

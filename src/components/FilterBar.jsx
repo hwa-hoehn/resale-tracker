@@ -10,6 +10,7 @@ export default function FilterBar({
   categoryFilter,
   onCategoryFilterChange,
   onAddClick,
+  onImportFile,
 }) {
   return (
     <section className="filter-bar">
@@ -45,9 +46,24 @@ export default function FilterBar({
         </select>
       </div>
 
-      <button type="button" className="btn-primary" onClick={onAddClick}>
-        + Neuer Artikel
-      </button>
+      <div className="filter-bar-actions">
+        {/* Versteckter <input type="file">, per Label als Button gestylt –
+            ein gängiges Muster, um das native Datei-Auswahlfenster hinter
+            einem eigenen Button zu verstecken. */}
+        <label className="btn-secondary btn-file">
+          Import
+          <input
+            type="file"
+            accept="application/json"
+            onChange={onImportFile}
+            hidden
+          />
+        </label>
+
+        <button type="button" className="btn-primary" onClick={onAddClick}>
+          + Neuer Artikel
+        </button>
+      </div>
     </section>
   )
 }

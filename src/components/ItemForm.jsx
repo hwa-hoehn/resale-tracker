@@ -1,20 +1,5 @@
 import { useState } from 'react'
-import { CATEGORIES, PLATFORMS, STATUSES } from '../constants'
-
-const EMPTY_ITEM = {
-  name: '',
-  brand: '',
-  category: CATEGORIES[0],
-  source: '',
-  purchasePrice: '',
-  targetPrice: '',
-  status: STATUSES[0],
-  platform: PLATFORMS[0],
-  salePrice: '',
-  purchaseDate: '',
-  saleDate: '',
-  notes: '',
-}
+import { CATEGORIES, EMPTY_ITEM, PLATFORMS, STATUSES } from '../constants'
 
 // useState holds the whole form as one object. Every input is "controlled":
 // its value always comes from this state, and onChange writes back into it
